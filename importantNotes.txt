@@ -1,0 +1,8 @@
+->if you used named route,, then you should be use url_to() method instead of route_to();
+-> route_to() method starting from server domain
+
+1. Group Category 
+2. in one city can be multiple apartment, so remove unique method in city column from database
+3. apartment details will be as apartment title, so apartment title will be unique name
+4. home header banner
+5. about-contact form to mail
