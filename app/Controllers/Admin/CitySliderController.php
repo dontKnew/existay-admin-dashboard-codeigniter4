@@ -144,8 +144,10 @@ class CitySliderController extends BaseController
                         /*after save compress image, save also origin file*/
                         $file->move("assets/admin/img/city_slider/original/", $name);
                         $_POST['image'] =  $name;
-                        unlink("assets/admin/img/city_slider/original/".$data['image']);
-                        unlink("assets/admin/img/city_slider/compress/".$data['image']);
+                        if(file_exists("assets/admin/img/city_slider/original/".$data['image'])){
+                            unlink("assets/admin/img/city_slider/original/".$data['image']);
+                            unlink("assets/admin/img/city_slider/compress/".$data['image']);
+                        }
                     }
                 }else {
                     $_POST['image'] =  $data['image'];
@@ -165,7 +167,13 @@ class CitySliderController extends BaseController
     public function deleteSlider($id)
     {
         $model = new Model();
+        $image =$model->find($id);
+        if(file_exists("assets/admin/img/city_slider/original/".$image['image'])){
+            unlink("assets/admin/img/city_slider/original/".$image['image']);
+            unlink("assets/admin/img/city_slider/compress/".$image['image']);
+        }
         $data = $model->delete($id);
+
         $session = session();
         if($data) {
             $session->setFlashdata('msg', "Photo Deleted Successfully");

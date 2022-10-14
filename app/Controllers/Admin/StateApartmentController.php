@@ -168,8 +168,10 @@ class StateApartmentController extends BaseController
                         /*after save compress image, save also origin file*/
                         $file->move("assets/admin/img/apartment/original/", $name);
                         $_POST['apartment_image'] =  $name;
-                        unlink("assets/admin/img/apartment/original/".$data['apartment_image']);
-                        unlink("assets/admin/img/apartment/compress/".$data['apartment_image']);
+                        if(file_exists("assets/admin/img/apartment/original/".$data['apartment_image'])){
+                            unlink("assets/admin/img/apartment/original/".$data['apartment_image']);
+                            unlink("assets/admin/img/apartment/compress/".$data['apartment_image']);
+                        }
                     }
                 }else {
                     $_POST['apartment_image'] =  $data['apartment_image'];
@@ -193,6 +195,12 @@ class StateApartmentController extends BaseController
     public function deleteApartment($id)
     {
         $model = new Model();
+
+        $image = $model->find($id);
+        if(file_exists("assets/admin/img/apartment/original/".$image['apartment_image'])){
+            unlink("assets/admin/img/apartment/original/".$image['apartment_image']);
+            unlink("assets/admin/img/apartment/compress/".$image['apartment_image']);
+        }
         $data = $model->delete($id);
         $session = session();
         if($data) {

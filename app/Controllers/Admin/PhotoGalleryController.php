@@ -42,39 +42,42 @@ class PhotoGalleryController extends BaseController
             $session = session();
             $gallery = new Model();
             try {
-                /*check image is valid or not*/
-                $validationRule = [
-                    'image' => [
-                        'label' => 'Gallery Photo',
-                        'rules' => 'uploaded[image]'
-                            . '|is_image[image]'
-                            . '|mime_in[image,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                    ],
-                ];
-                if (! $this->validate($validationRule)) {
-                    $session->setFlashdata("err","Please uploaded valid image");
-                }else {
-                    $realName = pathinfo($_FILES['image']['name'], PATHINFO_FILENAME);
-                    $file = $this->request->getFile("image");
-                    $randomName = $file->getRandomName();
-                    $name = $realName."_".$randomName;
-                    $name = strtolower($name);
+                if($this->request->getFileMultiple('image')){
+                    /*check image is valid or not*/
+                    $validationRule = [
+                        'image' => [
+                            'label' => 'Gallery Photo',
+                            'rules' => 'uploaded[image]'
+                                . '|is_image[image]'
+                                . '|mime_in[image,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                        ],
+                    ];
+                    if (! $this->validate($validationRule)) {
+                        $session->setFlashdata("err","Please uploaded all valid image");
+                    }else {
 
-                    /*compress image*/
-                    $image = \Config\Services::image()
-                        ->withFile($file)
-                        ->withResource()
-                        ->save('assets/admin/img/gallery/compress/' .$name,75);
+                        foreach($this->request->getFileMultiple('image') as $file){
+                            $name = $file->getRandomName();
+                            $name = "gallery_".strtolower($name);
 
-                    /*after save compress image, save also origin file*/
-                    $file->move("assets/admin/img/gallery/original/", $name);
+                            /*compress image*/
+                            $image = \Config\Services::image()
+                                ->withFile($file)
+                                ->withResource()
+                                ->save('assets/admin/img/gallery/compress/' .$name,75);
 
-                    $_POST['image'] =  $name;
-                    $data = array_map("trim", $_POST);
-                    $data['url_title'] = $this->userFriendlyUrl($data['apartment_title']);
-                    $gallery->save($data);
-                    $session->setFlashdata("msg","Photo added successfully");
-                    return redirect("admin/gallery");
+                            /*after save compress image, save also origin file*/
+                            $file->move("assets/admin/img/gallery/original/", $name);
+
+
+                            $_POST['image'] =  $name;
+                            $data = array_map("trim", $_POST);
+                            $data['url_title'] = $this->userFriendlyUrl($data['apartment_title']);
+                            $gallery->save($data);
+                        }
+                        $session->setFlashdata("msg","Photo added successfully");
+                        return redirect("admin/gallery");
+                    }
                 }
             }catch (\Exception $e){
                 $session->setFlashdata("err","Error : ".$e->getMessage());
@@ -140,8 +143,10 @@ class PhotoGalleryController extends BaseController
                         /*after save compress image, save also origin file*/
                         $file->move("assets/admin/img/gallery/original/", $name);
                         $_POST['image'] =  $name;
-                        unlink("assets/admin/img/gallery/original/".$data['image']);
-                        unlink("assets/admin/img/gallery/compress/".$data['image']);
+                        if(file_exists("assets/admin/img/gallery/original/".$data['image'])){
+                            unlink("assets/admin/img/gallery/original/".$data['image']);
+                            unlink("assets/admin/img/gallery/compress/".$data['image']);
+                        }
                     }
                 }else {
                     $_POST['image'] =  $data['image'];
@@ -161,6 +166,11 @@ class PhotoGalleryController extends BaseController
     public function deleteGallery($id)
     {
         $model = new Model();
+        $image = $model->find($id);
+        if(file_exists("assets/admin/img/gallery/original/".$image['image'])){
+            unlink("assets/admin/img/gallery/original/".$image['image']);
+            unlink("assets/admin/img/gallery/compress/".$image['image']);
+        }
         $data = $model->delete($id);
         $session = session();
         if($data) {

@@ -150,8 +150,12 @@ class TestimonialController extends BaseController
                         /*after save compress image, save also origin file*/
                         $file->move("assets/admin/img/testimonial/original/", $name);
                         $_POST['profile'] =  $name;
-                        unlink("assets/admin/img/testimonial/original/".$data['profile']);
-                        unlink("assets/admin/img/testimonial/compress/".$data['profile']);
+
+                        if(file_exists("assets/admin/img/testimonial/original/".$data['profile'])){
+                            unlink("assets/admin/img/testimonial/original/".$data['profile']);
+                            unlink("assets/admin/img/testimonial/compress/".$data['profile']);
+                        }
+
                     }
                 }else {
                     $_POST['profile'] =  $data['profile'];
@@ -172,6 +176,11 @@ class TestimonialController extends BaseController
     public function deleteTestimonial($id)
     {
         $model = new Model();
+        $image = $model->find($id);
+        if(file_exists("assets/admin/img/testimonial/original/".$image['profile'])){
+            unlink("assets/admin/img/testimonial/original/".$image['profile']);
+            unlink("assets/admin/img/testimonial/compress/".$image['profile']);
+        }
         $data = $model->delete($id);
         $session = session();
         if($data) {

@@ -74,11 +74,8 @@
                                             <a href="<?= url_to("admin/apartment/edit", $value['id']) ?>" class="badge badge-sm bg-gradient-success">
                                                 Edit
                                             </a>
-                                            <?php
-                                            $state_area = underscore(strtolower($value['state_area']));
-                                            $state = underscore(strtolower($value['state_area']));
-                                            ?>
-                                            <a href="#" class="badge badge-sm bg-gradient-primary">
+                                            <?php $state11 = underscore(strtolower($value['state'])); ?>
+                                            <a href="<?= url_to("apartment/city",dasherize($state11), $value['url_title']) ?>" class="badge badge-sm bg-gradient-primary">
                                                 View
                                             </a>
                                             <a href="<?= url_to("admin/apartment/delete",  $value['id']) ?>" class="badge badge-sm bg-gradient-danger">

@@ -22,6 +22,9 @@
     <link id="pagestyle" href="<?= base_url("/assets/admin/css/soft-ui-dashboard.css")?>" rel="stylesheet" />
 </head>
 <style>
+    body {
+        overflow-x:hidden;
+    }
     nav > ul.pager  {
         display:flex;
         justify-content: center;

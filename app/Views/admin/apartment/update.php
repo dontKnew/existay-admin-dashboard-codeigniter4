@@ -256,19 +256,12 @@
         console.error("CK-Editor-Error", error );
     });
 </script>
-<script>
-    // document.getElementById("loading").style.cssText = "display:block";
-    // window.onload = function(){
-
-        // document.getElementById("loading").style.cssText = "display:none";
-    // }
-</script>
-
 <?= $this->endSection() ?>
+
 <?= $this->section("main-contents")?>
 <!-- START ADD BLOG POST  -->
 <!--<div class="alert alert-warning text-white text-center" id="loading">Please Wait...</div>-->
-<div class="container-fluid pt-0 px-0 my-2" style="display:none">
+<div class="container-fluid pt-0 px-0 my-2">
     <div class="row  rounded  mx-0 d-flex justify-content-center py-4" style=" background-color:#f3f0f0 !important;">
         <div class="col-md-8">
             <h4 class="mb-2 mt-4 text-center text-black"> Update the State Apartment Information</h4>

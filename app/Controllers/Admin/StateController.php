@@ -121,8 +121,11 @@ class StateController extends BaseController
                         /*after save compress image, save also origin file*/
                         $file->move("assets/admin/img/state/original/", $name);
                         $_POST['image'] =  $name;
-                        unlink("assets/admin/img/state/original/".$data['image']);
-                        unlink("assets/admin/img/state/compress/".$data['image']);
+                        if(file_exists("assets/admin/img/state/original/".$data['image'])){
+                            unlink("assets/admin/img/state/original/".$data['image']);
+                            unlink("assets/admin/img/state/compress/".$data['image']);
+                        }
+
                     }
                 }else {
                     $_POST['image'] =  $data['image'];
@@ -141,6 +144,12 @@ class StateController extends BaseController
     public function deletePost($id)
     {
         $model = new StateModel();
+        $image = $model->find($id);
+        if(file_exists("assets/admin/img/state/original/".$image['image'])){
+            unlink("assets/admin/img/state/original/".$image['image']);
+            unlink("assets/admin/img/state/compress/".$image['image']);
+        }
+
         $data = $model->delete($id);
         $session = session();
         if($data) {

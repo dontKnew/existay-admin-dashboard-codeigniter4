@@ -24,10 +24,13 @@ $routes->get("login", "LoginController::home", ["as"=>"login"]);
 $routes->get("about", "AboutController::home", ["as"=>"about"]);
 $routes->get("offers", "OfferController::home", ["as"=>"offers"]);
 
+/*admin routing*/
+$routes->get('admin', 'Admin\AdminController::index', ["as"=>"admin/login"]);
+$routes->post('admin', 'Admin\AdminController::adminLogin', ["as"=>"admin/login"]);
+
 $routes->group("admin", function($routes){
     /*NORMAL ROUTES*/
-    $routes->get('login', 'Admin\AdminController::index', ["as"=>"admin/login"]);
-    $routes->post('login', 'Admin\AdminController::adminLogin', ["as"=>"admin/login"]);
+
     $routes->get('logout', 'Admin\AdminController::logout', ["as"=>"admin/logout"]);
 
     /* AUTHENTICATE ROUTES */

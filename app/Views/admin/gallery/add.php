@@ -67,7 +67,8 @@
                     <div class="col-md-6 ">
                         <div class="mb-3">
                             <label for="" class="form-label text-blue">Gallery Photo</label>
-                            <input type="file" name="image" value="" class="form-control form-white " required>
+                            <input type="file" name="image[]" multiple class="form-control form-white " required>
+
                             <img src="<?= base_url("assets/admin/img/gallery/original/". old("image")) ?>" width="100" height="auto" alt="<?= old("name") ?>" class="rounded">
                         </div>
                     </div>
